@@ -1,2 +1,2 @@
 # Keycloak
-keycloak configuration
+keycloak configuration with oracle db
