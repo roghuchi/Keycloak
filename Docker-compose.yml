@@ -1,0 +1,39 @@
+version: '3.7'
+services:
+  keycloak:
+    restart: on-failure:5
+    image: keycloak/cluster:latest
+    hostname: keycloak-clustered-1
+    volumes:
+      - /home/roghuchi/KC/kc-vol:/opt/keycloak/data/log/
+    environment:
+      - TZ=Asia/Tehran
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HOSTNAME=keycloak-clustered-1
+      - KC_HOSTNAME_STRICT=true
+      - KC_HOSTNAME_STRICT_BACKCHANNEL=true
+      - KC_HTTPS_PROTOCOLS=TLSv1.3,TLSv1.2 
+      - KC_METRICS_ENABLED=true
+      - KC_HEALTH_ENABLED=true
+      - HOSTNAME_ST=keycloak-clustered-1
+      - KC_DB=oracle
+      - KC_DB_URL_HOST=[oracle-ip]
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD=[oracle-pass]
+      - KC_DB_SCHEMA=keycloak
+      - KC_DB_URL_DATABASE=[oracle-service-name]
+      - KC_LOG_LEVEL=INFO
+      - JAVA_OPTS_APPEND="-Djava.net.preferIPv4Stack=false -Djava.net.preferIPv6Addresses=true"
+      - KC_DB_POOL_MAX_SIZE=200
+      - JGROUPS_DISCOVERY_PROTOCOL=TCPPING
+      - JGROUPS_DISCOVERY_EXTERNAL_IP=keycloak-clustered-1
+      - JGROUPS_DISCOVERY_PROPERTIES=initial_hosts="[cluster2-ip][7600]"
+      - SPRING_PROFILES_ACTIVE=prod
+      - WILDFLY_LOGLEVEL=INFO
+      - KC_LOG_CONSOLE_COLOR=true
+      - KC_LOG=console,file
+      - KC_LOG_FILE=/opt/keycloak/data/log/keycloak.log
+    ports:
+      - [cluster1-ip(local)]:8443:8443
+      - [cluster1-ip(local)]:7600:7600
